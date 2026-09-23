@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IhsanDataSub</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#F2F7FF]">
+
+<nav class="bg-white p-4 flex justify-between sticky top-0 shadow">
+  <div class="flex gap-2 items-center">
+    <div class="w-10 h-10 bg-gradient-to-br from-[#0A4D9C] to-[#00AEEF] rounded-xl flex items-center justify-center text-white font-black">i</div>
+    <b class="text-[#0A4D9C]">IhsanDataSub</b>
+  </div>
+  <button onclick="show('login')" class="border-2 border-[#0A4D9C] px-4 py-2 rounded-full text-sm">Login</button>
+</nav>
+
+<div id="home" class="max-w-4xl mx-auto p-6 text-center mt-10">
+  <h1 class="text-5xl font-black">Sayi DATA <span class="text-[#0A4D9C]">Mai RAHUSA</span></h1>
+  <p class="text-gray-500 mt-4">Website na gaske da Face ID & Thumbprint</p>
+  <div class="mt-8 grid grid-cols-2 gap-4">
+    <button onclick="faceID()" class="bg-white border-2 border-[#00AEEF] p-6 rounded-2xl"><div class="text-4xl">👤</div><b>Face ID</b></button>
+    <button onclick="finger()" class="bg-white border-2 border-[#0A4D9C] p-6 rounded-2xl"><div class="text-4xl">👆</div><b>Yatsa</b></button>
+  </div>
+  <button onclick="show('login')" class="bg-[#0A4D9C] text-white px-10 py-4 rounded-full mt-8 font-bold">Fara Signup Yanzu →</button>
+  <div class="grid grid-cols-4 gap-3 mt-10">
+    <div class="bg-white p-4 rounded-xl shadow">MTN<br><b>₦280</b></div>
+    <div class="bg-white p-4 rounded-xl shadow">GLO<br><b>₦270</b></div>
+    <div class="bg-white p-4 rounded-xl shadow">AIRTEL<br><b>₦280</b></div>
+    <div class="bg-white p-4 rounded-xl shadow">9MOBILE<br><b>₦250</b></div>
+  </div>
+</div>
+
+<div id="login" class="hidden max-w-md mx-auto mt-10 bg-white p-8 rounded-2xl shadow">
+  <h2 class="text-2xl font-black text-center">Signup / Login</h2>
+  <input id="name" placeholder="Suna (idan sabo ne)" class="w-full border p-4 rounded-xl mt-4">
+  <input id="email" placeholder="Email" class="w-full border p-4 rounded-xl mt-3">
+  <input id="pass" type="password" placeholder="Password" class="w-full border p-4 rounded-xl mt-3">
+  <button onclick="doLogin()" class="w-full bg-[#0A4D9C] text-white p-4 rounded-xl mt-4 font-bold">Shiga →</button>
+  <p class="text-xs text-center mt-3 text-gray-400">Database yana ajiyewa a wayar user</p>
+</div>
+
+<div id="dash" class="hidden max-w-2xl mx-auto p-6">
+  <div class="bg-gradient-to-br from-[#0A4D9C] to-[#00AEEF] p-6 rounded-3xl text-white">
+    <p id="uEmail">user@gmail.com</p>
+    <h1 class="text-4xl font-black">₦<span id="bal">500</span></h1>
+    <button onclick="fund()" class="bg-white text-[#0A4D9C] px-4 py-2 rounded-full mt-3 text-sm font-bold">+ Fund Wallet</button>
+  </div>
+  <div class="bg-white p-6 rounded-2xl mt-6">
+    <select id="net" class="w-full border p-4 rounded-xl"><option>MTN</option><option>GLO</option><option>AIRTEL</option><option>9MOBILE</option></select>
+    <input id="phone" placeholder="0803xxxxxxx" class="w-full border p-4 rounded-xl mt-3">
+    <select id="plan" class="w-full border p-4 rounded-xl mt-3"><option value="280">1GB - ₦280</option><option value="560">2GB - ₦560</option></select>
+    <button onclick="buy()" class="w-full bg-[#0A4D9C] text-white p-4 rounded-xl mt-4 font-bold">Saya Yanzu</button>
+    <div id="hist" class="mt-4 text-sm"></div>
+  </div>
+  <button onclick="show('admin')" class="w-full mt-6 bg-black text-white p-3 rounded-xl">Admin Dashboard</button>
+</div>
+
+<div id="admin" class="hidden max-w-2xl mx-auto p-6">
+  <h1 class="text-2xl font-black">Admin - Database</h1>
+  <div id="usersList" class="bg-white p-4 rounded-xl mt-4 text-sm"></div>
+</div>
+
+<script>
+function show(id){
+  ['home','login','dash','admin'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  if(id=='admin'){ let u=JSON.parse(localStorage.getItem('ihsan_all_users')||'[]'); document.getElementById('usersList').innerHTML = u.map(x=>`<div class="border-b py-2">${x.name} - ${x.email} - ₦${x.balance}</div>`).join('') || 'Babu users'; }
+}
+function faceID(){ alert('👤 Face ID scanning... ✅ Success!'); if(localStorage.getItem('ihsan_user')) show('dash'); else show('login'); }
+function finger(){ alert('👆 Thumbprint scanning... ✅ Success!'); if(localStorage.getItem('ihsan_user')) show('dash'); else show('login'); }
+function doLogin(){
+  let email=document.getElementById('email').value, pass=document.getElementById('pass').value, name=document.getElementById('name').value||email.split('@')[0];
+  if(!email||!pass){alert('Cika komai');return;}
+  let all=JSON.parse(localStorage.getItem('ihsan_all_users')||'[]');
+  let exist=all.find(x=>x.email==email);
+  if(!exist){ let nu={name,email,balance:500}; all.push(nu); localStorage.setItem('ihsan_all_users',JSON.stringify(all)); localStorage.setItem('ihsan_user',JSON.stringify(nu)); document.getElementById('uEmail').innerText=email; document.getElementById('bal').innerText=500; show('dash'); }
+  else{ localStorage.setItem('ihsan_user',JSON.stringify(exist)); document.getElementById('uEmail').innerText=exist.email; document.getElementById('bal').innerText=exist.balance; show('dash'); }
+}
+let bal=500;
+function fund(){ let a=prompt('Nawa?'); if(!a)return; bal+=parseInt(a); document.getElementById('bal').innerText=bal; let u=JSON.parse(localStorage.getItem('ihsan_user')); u.balance=bal; localStorage.setItem('ihsan_user',JSON.stringify(u)); let all=JSON.parse(localStorage.getItem('ihsan_all_users')); let i=all.findIndex(x=>x.email==u.email); all[i].balance=bal; localStorage.setItem('ihsan_all_users',JSON.stringify(all)); }
+function buy(){ let phone=document.getElementById('phone').value, net=document.getElementById('net').value, amt=parseInt(document.getElementById('plan').value); if(phone.length<11){alert('Number ba daidai ba');return;} if(bal<amt){alert('Balance bai isa ba');return;} bal-=amt; document.getElementById('bal').innerText=bal; document.getElementById('hist').innerHTML+=`<div class="border-b py-2">✅ ${net} → ${phone} -₦${amt}</div>`; fund(); }
+let saved=localStorage.getItem('ihsan_user'); if(saved){ let u=JSON.parse(saved); document.getElementById('uEmail').innerText=u.email; document.getElementById('bal').innerText=u.balance; bal=u.balance; }
+</script>
+</body>
+</html>
